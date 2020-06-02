@@ -1,0 +1,12 @@
+.idea/
+.tscache/
+.vscode/
+.baseDir.ts
+.atom-build.json
+node_modules/
+typings/
+target/
+logs/
+*.jar
+lib/
+libs/
