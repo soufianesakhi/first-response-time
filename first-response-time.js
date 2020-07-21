@@ -6,18 +6,20 @@ const pingIntervalMs = 100;
 
 const args = process.argv.slice(2);
 if (args.length == 0) {
-  console.log('The path of the java executable jar must be specified !');
+  console.log('Usage: node first-response-time.js <EXECUTABLE_PATH> <URL> <JDK_PATH>');
+  process.exit(-1);
 }
 
-const jarPath = args.shift();
+const execPath = args.shift();
+const requestUrl = args.shift();
 const jdkPath = args.shift();
-const javaPath = jdkPath ? path.join(jdkPath, "bin/java") : "java";
+const javaPath = jdkPath ? path.join(jdkPath, "bin/java") : null;
 
-const proc = spawn(javaPath, ["-jar", jarPath]);
+const proc = javaPath ? spawn(javaPath, ["-jar", execPath]) : spawn(execPath);
 
 const startTime = new Date().getTime();
 const intervalHandle = setInterval(() => {
-  request("http://localhost:8080/hello", (error, response, body) => {
+  request(requestUrl, (error, response, body) => {
     if (!error && response && response.statusCode === 200 && body) {
       const time = new Date().getTime() - startTime;
       console.log(time + " ms");

@@ -1,7 +1,7 @@
 # Introduction
 The `first-response-time.js` script can be used to collect the first response time also known as the time to first request.
 
-The script runs a java jar package and makes requests to the `http://localhost:8080/hello` endpoint in 100 ms intervals until it receives the 200 HTTP status code with a response body.
+The script runs an executable or a java jar package and makes requests to a specific URL in 100 ms intervals until it receives the 200 HTTP status code with a response body.
 
 # Installation
 1. Install Node.js with npm
@@ -11,7 +11,11 @@ The script runs a java jar package and makes requests to the `http://localhost:8
 
 
 ```java
-node first-response-time.js <JAR_PATH> <JDK_PATH>
+node first-response-time.js <EXECUTABLE_PATH> <URL> <JDK_PATH>
 ```
 
-The `<JDK_PATH>` is optionnal, the java included in the `PATH` env variable will be used f not present.
+`<EXECUTABLE_PATH>` executable or Jar file.
+
+`<URL>` request url.
+
+`<JDK_PATH>` mandatory in the case of a Jar executable.
