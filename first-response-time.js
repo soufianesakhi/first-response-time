@@ -1,23 +1,26 @@
 #!/usr/bin/env node
 
-const spawn = require("child_process").spawn;
+const exec = require("child_process").exec;
 const request = require("request");
-const path = require("path");
 
 const pingIntervalMs = 100;
 
 const args = process.argv.slice(2);
 if (args.length == 0) {
-  console.log('Usage: first-response-time <EXECUTABLE_PATH> <URL> [<JDK_PATH>]');
+  console.log('Usage: first-response-time "<COMMAND>" <URL>');
   process.exit(-1);
 }
 
-const execPath = args.shift();
+const command = args.shift();
 const requestUrl = args.shift();
-const jdkPath = args.shift();
-const javaPath = jdkPath ? path.join(jdkPath, "bin/java") : null;
 
-const proc = javaPath ? spawn(javaPath, ["-jar", execPath]) : spawn(execPath);
+const proc = exec(command, { timeout: 60000 }, (error) => {
+  if (error) {
+    console.error(error);
+    proc.kill();
+    process.exit(-1);
+  }
+});
 
 const startTime = new Date().getTime();
 const intervalHandle = setInterval(() => {

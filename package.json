@@ -1,6 +1,6 @@
 {
   "name": "first-response-time",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Measure the first response time",
   "main": "first-response-time.js",
   "bin": {
