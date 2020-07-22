@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const spawn = require("child_process").spawn;
 const request = require("request");
 const path = require("path");
@@ -6,7 +8,7 @@ const pingIntervalMs = 100;
 
 const args = process.argv.slice(2);
 if (args.length == 0) {
-  console.log('Usage: node first-response-time.js <EXECUTABLE_PATH> <URL> <JDK_PATH>');
+  console.log('Usage: first-response-time <EXECUTABLE_PATH> <URL> [<JDK_PATH>]');
   process.exit(-1);
 }
 

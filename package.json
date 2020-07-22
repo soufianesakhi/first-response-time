@@ -1,10 +1,21 @@
 {
   "name": "first-response-time",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Measure the first response time",
   "main": "first-response-time.js",
+  "bin": {
+    "first-response-time": "./first-response-time.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:soufianesakhi/first-response-time.git"
+  },
   "author": "Soufiane Sakhi",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/soufianesakhi/first-response-time/issues"
+  },
+  "homepage": "https://github.com/soufianesakhi/first-response-time",
   "dependencies": {
     "request": "^2.88.0"
   },

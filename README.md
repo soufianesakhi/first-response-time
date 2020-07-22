@@ -5,17 +5,16 @@ The script runs an executable or a java jar package and makes requests to a spec
 
 # Installation
 1. Install Node.js with npm
-1. Run `npm i` from this project's directory
+1. Run `npm i -g first-response-time`
 
 # Usage
 
-
 ```java
-node first-response-time.js <EXECUTABLE_PATH> <URL> <JDK_PATH>
+first-response-time <EXECUTABLE_PATH> <URL> <JDK_PATH>
 ```
 
 `<EXECUTABLE_PATH>` executable or Jar file.
 
 `<URL>` request url.
 
-`<JDK_PATH>` mandatory in the case of a Jar executable.
+`<JDK_PATH>` must be specified if and only if the executable is a Jar.
