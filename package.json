@@ -1,8 +1,9 @@
 {
   "name": "first-response-time",
-  "version": "2.2.0",
+  "version": "3.0.0",
   "description": "Measure the first response time",
   "main": "first-response-time.js",
+  "type": "module",
   "bin": {
     "first-response-time": "./first-response-time.js"
   },
@@ -17,7 +18,8 @@
   },
   "homepage": "https://github.com/soufianesakhi/first-response-time",
   "dependencies": {
-    "request": "^2.88.0"
+    "request-compose": "^2.1.7",
+    "tree-kill": "^1.2.2"
   },
   "devDependencies": {
     "@types/node": "10.x"

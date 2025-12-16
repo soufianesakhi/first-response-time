@@ -10,3 +10,6 @@ logs/
 *.jar
 lib/
 libs/
+.env
+tmp/
+.npmrc
