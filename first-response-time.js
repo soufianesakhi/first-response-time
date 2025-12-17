@@ -2,8 +2,10 @@
 
 import { exec } from "node:child_process";
 
-import request from "request-compose";
-import kill from "tree-kill";
+import https from "node:https";
+import http from "node:http";
+
+import treeKill from "tree-kill";
 
 let pingIntervalMs = 100;
 
@@ -28,41 +30,82 @@ if (ping === "--ping") {
   }
 }
 
+const startTime = new Date().getTime();
+let firstResponseTime;
+
 const proc = exec(command, { timeout: 60000 }, (error) => {
-  if (error) {
+  if (error && !firstResponseTime) {
     console.error("Error: " + error.message);
-    kill(proc.pid);
-    process.exit(-1);
+    pidKill(proc.pid).finally(() => process.exit(-1));
   }
 });
 
-const startTime = new Date().getTime();
-const intervalHandle = setInterval(async () => {
+(async () => {
   let error = false;
-  let responseReceived = false;
-  try {
-    const { res } = await request.client({
-      url: requestUrl,
-    });
-    responseReceived = true;
-    if (res.statusCode != 200) {
-      console.log("Received status code: " + res.statusCode);
-      error = true;
+  while (true) {
+    try {
+      await sleep(pingIntervalMs);
+      const { res } = await get(requestUrl);
+      if (res.statusCode != 200) {
+        console.log("Received status code: " + res.statusCode);
+        error = true;
+      }
+      break;
+    } catch (err) {
+      if (err?.code !== "ECONNREFUSED") {
+        error = true;
+        console.error(err);
+      }
     }
-  } catch (err) {
-    if (err?.code !== "ECONNREFUSED") {
-      error = true;
-      responseReceived = true;
-      console.error("Error: " + err.message);
-    }
-  } finally {
-    if (!responseReceived) {
-      return;
-    }
-    const time = new Date().getTime() - startTime;
-    console.log(`Received response in ${time} milliseconds`);
-    clearInterval(intervalHandle);
-    kill(proc.pid);
-    process.exit(error ? -1 : 0);
   }
-}, pingIntervalMs);
+  firstResponseTime = new Date().getTime() - startTime;
+  console.log(`Received response in ${firstResponseTime} milliseconds`);
+  await pidKill(proc.pid, false);
+  process.exit(error ? -1 : 0);
+})();
+
+async function pidKill(pid, ignoreError = true) {
+  return new Promise((resolve) => {
+    try {
+      if (pid == null) {
+        resolve();
+        return;
+      }
+      treeKill(pid, (err) => {
+        if (err && !ignoreError) {
+          console.error(err.message ?? err);
+        }
+        resolve();
+      });
+    } catch (err) {
+      if (!ignoreError) {
+        console.error(err.message ?? err);
+      }
+      resolve();
+    }
+  });
+}
+
+async function sleep(millis) {
+  return new Promise((resolve) => setTimeout(resolve, millis));
+}
+
+/**
+ * @param {string} url
+ * @returns {Promise<{res: import("node:http").IncomingMessage}>}
+ */
+async function get(url) {
+  return new Promise((resolve, reject) => {
+    const req = (url.startsWith("http:") ? http.request : https.request)(
+      url,
+      {
+        method: "GET",
+      },
+      (res) => {
+        resolve({ res });
+      }
+    );
+    req.on("error", reject);
+    req.end();
+  });
+}
